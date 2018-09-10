@@ -4887,6 +4887,22 @@ int_add(VALUE self, VALUE n)
   }
 }
 
+static VALUE
+int_sub(VALUE self, VALUE n)
+{
+  if (FIXNUM_P(self) && FIXNUM_P(n)) {
+    /* c = a - b */
+    int a = FIX2INT(self);
+    int b = FIX2INT(n);
+    int c = a - b;
+    VALUE result = INT2NUM(c);
+    return result;
+  }
+  else {
+    return rb_int_minus(self, n);
+  }
+}
+
 /*
  *  Document-method: Integer#upto
  *  call-seq:
@@ -5491,6 +5507,8 @@ Init_Numeric(void)
     rb_define_method(rb_cInteger, "digits", rb_int_digits, -1);
 
     rb_define_method(rb_cInteger, "add", int_add, 1);
+
+    rb_define_method(rb_cInteger, "sub", int_sub, 1);
 
 #ifndef RUBY_INTEGER_UNIFICATION
     rb_cFixnum = rb_cInteger;
