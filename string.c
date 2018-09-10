@@ -10399,6 +10399,16 @@ rb_str_unicode_normalized_p(int argc, VALUE *argv, VALUE str)
     return unicode_normalize_common(argc, argv, str, id_normalized_p);
 }
 
+static VALUE
+rb_str_palindrome_p(VALUE self)
+{
+  const char *pat = "[^A-z0-9\\p{hiragana}\\p{katakana}]";
+  VALUE argv[2] = {rb_reg_regcomp(rb_utf8_str_new_cstr(pat)), rb_str_new_cstr("")};
+  VALUE filtered_str = rb_str_downcase(0, NULL, str_gsub(2, argv, self, FALSE));
+  return rb_str_empty(filtered_str) ? Qfalse :
+         rb_str_equal(filtered_str, rb_str_reverse(filtered_str));
+}
+
 /**********************************************************************
  * Document-class: Symbol
  *
@@ -11066,6 +11076,8 @@ Init_String(void)
     rb_define_method(rb_cString, "unicode_normalize", rb_str_unicode_normalize, -1);
     rb_define_method(rb_cString, "unicode_normalize!", rb_str_unicode_normalize_bang, -1);
     rb_define_method(rb_cString, "unicode_normalized?", rb_str_unicode_normalized_p, -1);
+
+    rb_define_method(rb_cString, "palindrome?", rb_str_palindrome_p, 0);
 
     rb_fs = Qnil;
     rb_define_hooked_variable("$;", &rb_fs, 0, rb_fs_setter);
