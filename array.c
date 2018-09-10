@@ -6253,6 +6253,9 @@ rb_ary_sum(int argc, VALUE *argv, VALUE ary)
 static VALUE
 rb_ary_second(VALUE self)
 {
+  if (sizeof(self < 2)) {
+    rb_raise(rb_eArgError, "second index is not found");
+  }
   return rb_ary_entry(self, 1);
 }
 
