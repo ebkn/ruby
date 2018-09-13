@@ -1841,6 +1841,17 @@ rb_ary_each(VALUE ary)
  */
 
 static VALUE
+ary_each_hash_array(VALUE ary)
+{
+  long i;
+  RETURN_SIZED_ENUMERATOR(ary, 0, 0, ary_enum_length);
+  for (i=0; i<RARRAY_LEN(ary); i++) {
+	  rb_yield(rb_hash_values(RARRAY_AREF(ary, i)));
+  }
+  return ary;
+}
+
+static VALUE
 rb_ary_each_index(VALUE ary)
 {
     long i;
@@ -6300,6 +6311,7 @@ Init_Array(void)
     rb_define_alias(rb_cArray,  "prepend", "unshift");
     rb_define_method(rb_cArray, "insert", rb_ary_insert, -1);
     rb_define_method(rb_cArray, "each", rb_ary_each, 0);
+    rb_define_method(rb_cArray, "each_hash_array", ary_each_hash_array, 0);
     rb_define_method(rb_cArray, "each_index", rb_ary_each_index, 0);
     rb_define_method(rb_cArray, "reverse_each", rb_ary_reverse_each, 0);
     rb_define_method(rb_cArray, "length", rb_ary_length, 0);
